@@ -1,0 +1,211 @@
+% --------------------------------------------------------
+% ----------------------PACKAGES--------------------------
+% --------------------------------------------------------
+\documentclass[12pt]{article}
+% \usepackage{showframe}
+% \usepackage{fancyhdr}
+\usepackage{enumitem} % noitemsep
+\usepackage{amsmath, amsfonts, amsthm, amssymb, algorithm, graphicx, mathtools,xfrac}
+\usepackage{listings}
+\usepackage{titling}
+% hyperlinks
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks=true,
+    linkcolor={red!75!black},
+    filecolor=magenta,
+    urlcolor=blue,
+}
+\usepackage[a4paper,margin=1cm,landscape]{geometry}
+\usepackage{tikz} % drawing
+% \usepackage{fullpage}
+\usepackage[UKenglish]{isodate}% http://ctan.org/pkg/isodate
+\usepackage{fp}
+\usepackage{pgffor}
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{invariant}[theorem]{Invariant}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{property}[theorem]{Property}
+\newtheorem{proposition}[theorem]{Proposition}
+
+% --------------------------------------------------------
+% ---------------------NEW COMMANDS-----------------------
+% -------------Automatic /label for a section-------------
+% --------------------------------------------------------
+
+% usage: same as section, subsection, etc -- automatically adds label.
+\newcommand{\autosection}[1]{\section{#1}\label{#1}}
+\newcommand{\autosubsection}[1]{\subsection{#1}\label{#1}}
+\newcommand{\autosubsubsection}[1]{\subsubsection{#1}\label{#1}}
+
+% usage: \refer{name} creates ``name (see \S\ref{name})''. Place \refer{[...]} around your content to auto-link it.
+\newcommand{\refer}[1]{#1 (see \S \ref{#1})}
+
+% usage: \centerimage{img.extension} creates a scaled, centered image in the document
+\newcommand{\centerimage}[1]{ \begin{center}\includegraphics[width=1.0\textwidth]{#1}\par\end{center}}
+
+% --------------------------------------------------------
+% -----------FORMATTING OF DOCUMENT, VARIABLES------------
+% --------------------------------------------------------
+
+\newcommand\foldwidth{\textwidth/3}
+\newcommand\secondfold{\foldwidth * 2}
+\newcommand{\commenttext}[1]{\em\scriptsize{#1}}
+\newcommand{\emphtext}[1]{\textbf{\textit{\Large{#1}}}}
+
+% --------------------------------------------------------
+% --------------------FORMAT COMMANDS---------------------
+% --------------------------------------------------------
+\newcommand\pageoutline{
+% \draw (0,0) -- (\textwidth, 0);
+\draw[dashed] ({\foldwidth - .5cm},0) -- (\foldwidth-.5cm, \textheight);
+% \draw[dashed] (\foldwidth,0) -- (\foldwidth, \textheight);
+\draw[dashed] (\foldwidth * 2 + .5cm,0) -- (\foldwidth * 2 + .5cm, \textheight);
+% \draw (0,\textheight) -- (\textwidth, \textheight);
+}
+
+
+
+\newcommand{\abilityscore}[3]{
+% #1: vertical align
+% #2: Name
+% #3: list of modified stats
+\draw ({\secondfold + \foldwidth/8}, #1) -- node[above] {\commenttext{score}}
+      ({\secondfold + \foldwidth/8 * 2}, #1) --
+      ({\secondfold + \foldwidth/8 * 2.25}, {#1 - \textheight/40}) --
+      ({\secondfold + \foldwidth/8 * 2.5}, #1) -- node[above] {\commenttext{mod}}
+      ({\secondfold + \foldwidth/8 * 3.5}, #1) -- node[right] {\bf\Large{#2}}
+      ({\secondfold + \foldwidth/8 * 3.5}, {#1 - \textheight/14}) --
+      ({\secondfold + \foldwidth/8 * 2.5}, {#1 - \textheight/14}) --
+      ({\secondfold + \foldwidth/8 * 2.25}, {#1 - \textheight/14 + \textheight/40}) --
+      ({\secondfold + \foldwidth/8 * 2}, {#1 - \textheight/14}) --
+      ({\secondfold + \foldwidth/8}, {#1 - \textheight/14}) -- cycle;
+\node[align=right,left] at ({\secondfold + \foldwidth}, {#1 - \textheight/28}) {#3};
+\draw[very thin] ({\secondfold + \foldwidth/8}, {#1 - \textheight/14}) -- ({\secondfold + \foldwidth/8 * 2}, #1);
+}
+\newcommand\abilitysep{\textheight/8}
+
+
+
+\newcommand\inputboxwidth{\foldwidth/6}
+\newcommand\inputboxheight{\foldwidth/12}
+% \newcommand{\inputbox}[3]{
+% \draw ({#2 - \inputboxwidth/2}, {#3 - \inputboxheight/2}) rectangle
+%       ({#2 + \inputboxwidth/2}, {#3 + \inputboxheight/2}) node[pos=0.5,yshift=-\inputboxheight/2,below] {\commenttext{#1}};
+% }
+\newcommand{\inputbox}[4]{
+% #1: under text
+% #2: left text
+% #3: x center pos
+% #4: y center pos
+\draw ({#3 - \inputboxwidth/2}, {#4 - \inputboxheight/2}) rectangle
+      ({#3 + \inputboxwidth/2}, {#4 + \inputboxheight/2})
+      node[pos=0.5,yshift=-\inputboxheight/2,below] {\commenttext{#1}}
+      node[pos=0.5,xshift=-\inputboxwidth/2,left,align=right] {\emphtext{#2}};
+}
+\newcommand{\boxset}[5]{
+% #1: y pos
+% #2: left text
+% #3: first box text
+% #4: second box text
+% #5: third box text
+\inputbox{#3}{#2}{\foldwidth/5 * 2}{#1}
+\inputbox{#4}{}{\foldwidth/5 * 3}{#1}
+\inputbox{#5}{}{\foldwidth/5 * 4}{#1}
+}
+
+\newcommand{\inputline}[1]{
+    $\underset{\text{\commenttext{#1}}}{\underline{\hspace{1cm}}}$
+}
+
+
+
+
+
+
+% --------------------------------------------------------
+% ----------------SETUP / DOC PROPERTIES-----------------
+% --------------------------------------------------------
+
+\pagestyle{empty}
+
+\title{}
+\author{Isabel Trahan}
+\date{\today }
+
+% \lhead{\thedate}
+% \chead{\thetitle}
+% \rhead{\theauthor}
+
+% --------------------------------------------------------
+% ------------------------DOCUMENT------------------------
+% --------------------------------------------------------
+\newcommand{\entry}[1]{#1 & \multicolumn{2}{c|}{}\\\hline}
+\newcommand{\attr}[1]{#1 &&\\\hline}
+\newcommand{\heading}[1]{\emptyspace\multicolumn{3}{c}{\textbf{#1}}\\\hline}
+\newcommand\emptyspace{\multicolumn{3}{c}{}\\}
+
+\newcommand\invspace{\multicolumn{2}{|c|}{}&\\\hline}
+% \def\inventory{}\foreach \n in {1,...,2}{\invspace}}\inventory
+
+% the number of sheets to fit on the page
+\newcommand\numsheets{4}
+\newcommand\pwidth{\textwidth/3\numsheets}
+
+\newcommand{\drawsheet}[2]{
+%x, y
+\node[] at (#1, #2) {
+\begin{tabular}{|p{3\pwidth} | p{\pwidth} | p{\pwidth}|}
+    \heading{DCC 0-Level Character}
+    \entry{Name}
+    \entry{Alignment}
+    \entry{Race}
+    \entry{Occupation}
+    XP & \multicolumn{2}{c|}{\hspace{3ex}/10} \\\hline
+    \entry{Attack}
+    Hit Points & \multicolumn{2}{c|}{/} \\\hline
+    \entry{Armor Class}
+
+    \heading{Inventory}
+    \multicolumn{2}{|c|}{copper pieces}&\\\hline
+    % \invspace
+    \invspace
+    \invspace
+    \invspace
+    \invspace
+    \invspace
+
+    \heading{Attributes}
+    \attr{STR\tiny{ength}}
+    \attr{AGI\tiny{lity}}
+    \attr{STA\tiny{mina}}
+    \attr{PER\tiny{sonality}}
+    \attr{INT\tiny{elligence}}
+    \attr{LUCK}
+    \entry{Birth Augur}
+
+    \heading{Saves}
+    \entry{Reflex}
+    \entry{Fortitude}
+    \entry{Will}
+\hline
+
+\end{tabular}};}
+
+\begin{document}
+\noindent
+\begin{tikzpicture}
+    % outline
+    \foreach \x in {1,...,\numsheets}
+        \drawsheet{\x\textwidth/\numsheets}{0};
+    % \drawsheet{\textwidth/5}{0}
+    % \drawsheet{2\textwidth/5}{0}
+    % \drawsheet{3\textwidth/5}{0}
+    % \drawsheet{4\textwidth/5}{0}
+\end{tikzpicture}
+\end{document}

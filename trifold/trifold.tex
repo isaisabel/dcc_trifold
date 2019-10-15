@@ -1,0 +1,384 @@
+% --------------------------------------------------------
+% ----------------------PACKAGES--------------------------
+% --------------------------------------------------------
+\documentclass{article}
+% \usepackage{showframe}
+% \usepackage{fancyhdr}
+\usepackage{enumitem} % noitemsep
+\usepackage{amsmath, amsfonts, amsthm, amssymb, algorithm, graphicx, mathtools,xfrac}
+\usepackage{listings}
+\usepackage{titling}
+% hyperlinks
+\usepackage{hyperref}
+\usepackage{xcolor}
+\hypersetup{
+    colorlinks=true,
+    linkcolor={red!75!black},
+    filecolor=magenta,
+    urlcolor=blue,
+}
+\usepackage[a4paper,margin=1cm,landscape]{geometry}
+\usepackage{tikz} % drawing
+% \usepackage{fullpage}
+\usepackage[UKenglish]{isodate}% http://ctan.org/pkg/isodate
+\usepackage{fp}
+\usepackage{array}
+\usepackage{etoolbox} %\ifstrequal
+
+
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{invariant}[theorem]{Invariant}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{property}[theorem]{Property}
+\newtheorem{proposition}[theorem]{Proposition}
+
+% --------------------------------------------------------
+% ---------------------NEW COMMANDS-----------------------
+% -------------Automatic /label for a section-------------
+% --------------------------------------------------------
+
+% usage: same as section, subsection, etc -- automatically adds label.
+\newcommand{\autosection}[1]{\section{#1}\label{#1}}
+\newcommand{\autosubsection}[1]{\subsection{#1}\label{#1}}
+\newcommand{\autosubsubsection}[1]{\subsubsection{#1}\label{#1}}
+
+% usage: \refer{name} creates ``name (see \S\ref{name})''. Place \refer{[...]} around your content to auto-link it.
+\newcommand{\refer}[1]{#1 (see \S \ref{#1})}
+
+% usage: \centerimage{img.extension} creates a scaled, centered image in the document
+\newcommand{\centerimage}[1]{ \begin{center}\includegraphics[width=1.0\textwidth]{#1}\par\end{center}}
+
+% --------------------------------------------------------
+% -----------FORMATTING OF DOCUMENT, VARIABLES------------
+% --------------------------------------------------------
+
+\newcommand\foldwidth{\textwidth/3}
+\newcommand\secondfold{\foldwidth * 2}
+\newcommand{\commenttext}[1]{\em\scriptsize{#1}}
+\newcommand{\emphtext}[1]{\textbf{\textit{\Large{#1}}}}
+\newcommand{\superemphtext}[1]{\textbf{\textit{\Huge{#1}}}}
+
+
+% --------------------------------------------------------
+% --------------------FORMAT COMMANDS---------------------
+% --------------------------------------------------------
+\newcommand\pageoutline{
+% \draw (0,0) -- (\textwidth, 0);
+\draw[dashed] ({\foldwidth - .5cm},0) -- (\foldwidth-.5cm, \textheight);
+% \draw[dashed] (\foldwidth,0) -- (\foldwidth, \textheight);
+\draw[dashed] (\foldwidth * 2 + .5cm,0) -- (\foldwidth * 2 + .5cm, \textheight);
+% \draw (0,\textheight) -- (\textwidth, \textheight);
+}
+
+
+
+\newcommand{\abilityscore}[3]{
+% #1: vertical align
+% #2: Name
+% #3: list of modified stats
+\draw ({\secondfold + \foldwidth/8}, #1) -- node[above] {\commenttext{score}}
+      ({\secondfold + \foldwidth/8 * 2}, #1) --
+      ({\secondfold + \foldwidth/8 * 2.25}, {#1 - \textheight/40}) --
+      ({\secondfold + \foldwidth/8 * 2.5}, #1) -- node[above] {\commenttext{mod}}
+      ({\secondfold + \foldwidth/8 * 3.5}, #1) -- node[right] {\bf\Large{#2}}
+      ({\secondfold + \foldwidth/8 * 3.5}, {#1 - \textheight/14}) --
+      ({\secondfold + \foldwidth/8 * 2.5}, {#1 - \textheight/14}) --
+      ({\secondfold + \foldwidth/8 * 2.25}, {#1 - \textheight/14 + \textheight/40}) --
+      ({\secondfold + \foldwidth/8 * 2}, {#1 - \textheight/14}) --
+      ({\secondfold + \foldwidth/8}, {#1 - \textheight/14}) -- cycle;
+\node[align=right,left] at ({\secondfold + \foldwidth}, {#1 - \textheight/28}) {#3};
+\draw[very thin] ({\secondfold + \foldwidth/8}, {#1 - \textheight/14}) -- ({\secondfold + \foldwidth/8 * 2}, #1);
+}
+\newcommand\abilitysep{\textheight/8}
+
+
+
+\newcommand\inputboxwidth{\foldwidth/6}
+\newcommand\inputboxheight{\foldwidth/12}
+% \newcommand{\inputbox}[3]{
+% \draw ({#2 - \inputboxwidth/2}, {#3 - \inputboxheight/2}) rectangle
+%       ({#2 + \inputboxwidth/2}, {#3 + \inputboxheight/2}) node[pos=0.5,yshift=-\inputboxheight/2,below] {\commenttext{#1}};
+% }
+\newcommand{\inputbox}[4]{
+% #1: under text
+% #2: left text
+% #3: x center pos
+% #4: y center pos
+\draw ({#3 - \inputboxwidth/2}, {#4 - \inputboxheight/2}) rectangle
+      ({#3 + \inputboxwidth/2}, {#4 + \inputboxheight/2})
+      node[pos=0.5,yshift=-\inputboxheight/2,below] {\commenttext{#1}}
+      node[pos=0.5,xshift=-\inputboxwidth/2,left,align=right] {\emphtext{#2}};
+}
+\newcommand{\boxset}[5]{
+% #1: y pos
+% #2: left text
+% #3: first box text
+% #4: second box text
+% #5: third box text
+\inputbox{#3}{#2}{\foldwidth/5 * 2}{#1}
+\inputbox{#4}{}{\foldwidth/5 * 3}{#1}
+\inputbox{#5}{}{\foldwidth/5 * 4}{#1}
+}
+
+\newcommand{\inputline}[1]{
+    $\underset{\text{\commenttext{#1}}}{\underline{\hspace{1cm}}}$
+}
+
+\newcommand{\longinputline}[1]{
+    $\underset{\text{\commenttext{#1}}}{\underline{\hspace{1.5cm}}}$
+}
+
+
+\newcommand\acradius{\foldwidth/16}
+\newcommand\acy{\abilitysep * 5}
+
+\newcommand\linesep{\foldwidth/14}
+\newcommand\maxlinenum{10}
+\newcommand{\schartvline}[1]{
+    \draw[thin] ({\foldwidth - \linesep * (\maxlinenum - #1 + 1) - .5cm}, 2\abilitysep/3) -- ({\foldwidth - \linesep * (\maxlinenum - #1 + 1) - .5cm},\textheight - \abilitysep) node[above] {\commenttext{+#1}};
+}
+
+\newcommand\schartnumlines{26}
+\newcommand\minschartx{\foldwidth - \linesep * \maxlinenum - .5cm}
+\newcommand\maxschartx{\foldwidth - \linesep * \maxlinenum - 9 - .5cm}
+\newcommand{\schartstepx}{(\textheight-\abilitysep - 2\abilitysep/3)/\schartnumlines}
+\newcommand{\scharthline}[1]{
+    \draw[dotted,thin] (\minschartx, {\textheight-\abilitysep - (#1 * \schartstepx)}) node[left] {\rule[0cm]{1.9cm}{.15mm}} -- ({\foldwidth - \linesep * (\maxlinenum - 9) - .5cm}, {\textheight-\abilitysep - (#1 * \schartstepx)});
+}
+
+\newcommand\numitemchartlines{26}
+\newcommand\minitemchartx{2\foldwidth + 1.5cm}
+\newcommand\maxitemchartx{3\foldwidth }
+\newcommand{\itemchartstepx}{(\textheight-\abilitysep - 2\abilitysep/3)/\numitemchartlines}
+\newcommand{\itemcharthline}[1]{
+    \draw (\minitemchartx, {\textheight-\abilitysep - (#1 * \itemchartstepx)}) -- (\maxitemchartx, {\textheight-\abilitysep - (#1 * \itemchartstepx)});
+}
+
+\newcommand{\classheader}[2]{
+% 1: class name
+% 2: class desc
+\node at (1.5\foldwidth, 19\textheight/20) {\superemphtext{#1}};
+\node[text width=\foldwidth-1cm,below] at (1.5\foldwidth, 18.25\textheight/20) {
+    #2};
+}
+
+% --------------------------------------------------------
+% ----------------SETUP / DOC PROPERTIES-----------------
+% --------------------------------------------------------
+
+\pagestyle{empty}
+
+\title{}
+\author{Isabel Trahan}
+\date{\today }
+
+% \lhead{\thedate}
+% \chead{\thetitle}
+% \rhead{\theauthor}
+
+% --------------------------------------------------------
+% ------------------------DOCUMENT------------------------
+% --------------------------------------------------------
+
+\begin{document}
+% for each class
+\foreach \classname in {wizard,cleric,warrior,thief,dwarf,elf,halfling}{
+
+\noindent
+\begin{tikzpicture}
+    % outline
+    \pageoutline
+
+    % --------------------------------------------------------
+    % ------------------------MAIN PAGE-----------------------
+    % --------------------------------------------------------
+
+    % ability scores
+    \abilityscore{\abilitysep * 6}{STR}{
+        \commenttext{Melee to-hit} \\
+        \commenttext{Melee damage}
+    }
+    \abilityscore{\abilitysep * 5}{AGI}{
+        \commenttext{Missile to-hit} \\
+        \commenttext{Armor class} \\
+        \commenttext{Reflex saves} \\
+        \commenttext{Initiative}
+    }
+    \abilityscore{\abilitysep * 4}{STA}{
+        \commenttext{Hit points} \\
+        \commenttext{Fortitude saves}
+    }
+    \abilityscore{\abilitysep * 3}{PER}{
+        \commenttext{Willpower saves}
+    }
+    \abilityscore{\abilitysep * 2}{INT}{
+        \commenttext{Languages}
+    }
+    \abilityscore{\abilitysep * 1}{LUCK}{
+        \commenttext{Crit/fumble rolls} \\
+        \commenttext{Ability burn (+1/pt)} \\
+        \rule[-.3cm]{2cm}{.15mm} % write-in
+    }
+     % revision date
+    \node[above] at ({\secondfold + 1/2 * \foldwidth}, 0) {{\tiny Revised \cleanlookdateon\today}};
+
+    % Title + name
+    \draw ({\secondfold + \foldwidth/8}, {\abilitysep * 8}) rectangle ({\secondfold + \foldwidth - \abilitysep * .5}, {\abilitysep * 7})
+    node[pos=.5,anchor=center,fill=white,draw,yshift= -\abilitysep * .75, xshift=-\foldwidth/10] {
+        \begin{tabular}{r | l}
+            \emphtext{Title} & \emphtext{Name} \\ \hline
+            \commenttext{Alignment:} & \rule[-.7mm]{1.5cm}{.15mm} \\ % write-in
+            \commenttext{Occupation:} & \rule[-.7mm]{1.5cm}{.15mm} \\ % write-in
+        \end{tabular}
+    };
+
+    \draw[very thick] ({\secondfold + \foldwidth/8 + \foldwidth/16}, {\abilitysep * 7 + \abilitysep * .2}) --
+                      ({\secondfold + \foldwidth/8 + \foldwidth/4}, {\abilitysep * 7 + \abilitysep * .2});
+    \draw[very thick] ({\secondfold + \foldwidth/8 + \foldwidth/26 + \foldwidth/4}, {\abilitysep * 7 + \abilitysep * .2}) --
+                      ({\secondfold + \foldwidth/8 + \foldwidth/26 + \foldwidth/4 + \foldwidth/3.5}, {\abilitysep * 7 + \abilitysep * .2});
+
+    % level circle
+    \draw[fill=white] ({\secondfold - \abilitysep * .5 + \foldwidth}, {\abilitysep * 7.5}) circle (\abilitysep * .5) node[fill=white,draw,yshift= -\abilitysep * .75] {
+        \begin{tabular}{r | l}
+            \multicolumn{2}{c}{\emphtext{Level}} \\ \hline
+            \commenttext{XP:} & \rule[-.7mm]{1cm}{.15mm} \\ % write-in
+            \commenttext{Next:} & \rule[-.7mm]{1cm}{.15mm} \\ % write-in
+        \end{tabular}
+    };
+
+
+    % --------------------------------------------------------
+    % ------------------------QUICK REF-----------------------
+    % --------------------------------------------------------
+
+    \node[draw, text width=\textheight - 2.4mm, rotate=-90,right] at ({2\foldwidth - .1cm}, \textheight) {
+        \emphtext{Dice Chain:}
+        $d3  \rightarrow  d4  \rightarrow  d5  \rightarrow  d6  \rightarrow  d7  \rightarrow  d8  \rightarrow  d10 -– d12  \rightarrow  d14 \rightarrow d16 \rightarrow d20 \rightarrow d24^1 \rightarrow d30^2$ \\
+        \commenttext{$^1$: 1d12 + (1d2-1 * 12), $^2$: 1d10 + (1d3-1 * 10)}
+    };
+
+    % \node[text width=\foldwidth-1cm,below] at (1.5\foldwidth - .5cm, \textheight) {
+    %     \emphtext{Actions:}
+    %     Each round, a character may move its normal speed {\em and} do one thing for each of its action dice. The actions a character may take depends on their class:
+    %     \begin{itemize}[label=]
+    %         \item All characters can take another movement for their actions.
+    %         \item A warrior can make an attack or mighty deed of arms for each of his actions.
+    %         \item A wizard can attack {\em or} cast a spell with their first die and can only cast a spell with the second die.
+    %         \item An elf can attack or cast a spell with any action die.
+    %         \item Most simple actions (drawing weapons, opening doors, reading scrolls) take a single action.
+    %     \end{itemize}
+    % };
+
+    \draw (\foldwidth, \textheight - \abilitysep/2) -- (2\foldwidth - 1.2cm, \textheight - \abilitysep/2)
+    node[pos=.5,above] {
+        \expandafter\ifstrequal\expandafter{\classname}{wizard}{\emphtext{Grimorie}}{
+            \expandafter\ifstrequal\expandafter{\classname}{elf}{\emphtext{Grimorie}}{
+                \expandafter\ifstrequal\expandafter{\classname}{cleric}{\emphtext{Notes}}{
+                    \expandafter\ifstrequal\expandafter{\classname}{dwarf}{\emphtext{Notes}}{
+                        \expandafter\ifstrequal\expandafter{\classname}{thief}{\emphtext{Notes}}{
+                            \expandafter\ifstrequal\expandafter{\classname}{warrior}{\emphtext{Notes}}{
+                                \expandafter\ifstrequal\expandafter{\classname}{halfling}{\emphtext{Notes}}{
+                                    CLASS ERROR
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    -- (2\foldwidth - 1.2cm, 0) -- (\foldwidth, 0) -- cycle;
+
+    % --------------------------------------------------------
+    % -----------------------COMBAT STATS---------------------
+    % --------------------------------------------------------
+
+    \boxset{\abilitysep * 1}{Crits}{Crit die}{Crit table/pg}{Fumble die}
+    \boxset{\abilitysep * 2}{Saves}{Fortitude}{Reflex}{Willpower}
+    \boxset{\abilitysep * 3}{HP}{Current}{Maximum}{Hit die}
+    \boxset{\abilitysep * 4}{Attack}{Attack Bonus}{Action Dice}{Initiative}
+
+    % AC
+    \draw[fill=white] (\acradius, \acy) circle (\acradius)
+    % node[xshift=\acradius,right,yshift=-1.5mm] { = 10 $+$ \inputline{Agility} + \inputline{Armor}+ \inputline{Other} }
+    node[below, draw, fill=white, yshift=-\acradius/2] { \em\textbf{AC} };
+    \boxset{\acy}{: 10 -}{Agility}{Armor}{Other}
+    \node[draw, fill=white] at ({(\foldwidth/5 * 1 + \foldwidth/5 * 2)/2}, \abilitysep * 5) {+};
+    \node[draw, fill=white] at ({(\foldwidth/5 * 2 + \foldwidth/5 * 3)/2}, \abilitysep * 5) {+};
+    \node[draw, fill=white] at ({(\foldwidth/5 * 3 + \foldwidth/5 * 4)/2}, \abilitysep * 5) {+};
+
+    % \begin{tabular}{c c c c c c c c c}
+    %     10 & + & \writein & + & \writein & + & \writein & + & \writein \\
+    %        &   &  \commenttext{AGI}     &   &    \commenttext{armor} &   &   \commenttext{shield} &   & \commenttext{other} \\
+    % \end{tabular}
+
+    % equipment
+    \draw (0,\textheight - \abilitysep/2) rectangle ((\foldwidth/5 * 4 + \inputboxwidth/2, \abilitysep * 6)
+    node[pos=.5,yshift=(\textheight - \abilitysep/2 - \abilitysep * 6)/2,above] {\emphtext{Equipment / Stats}};
+
+    % \node (\foldwidth/2, \abilitysep * 6);
+
+
+\end{tikzpicture}
+\begin{tikzpicture}
+    % outline
+    \pageoutline
+
+    % --------------------------------------------------------
+    % --------------------------SKILLS------------------------
+    % --------------------------------------------------------
+    \node at (\foldwidth/2 - .5cm, \textheight - \abilitysep/2) {\emphtext{Skills}};
+
+    \foreach \n in {1,...,\maxlinenum}{
+        \schartvline{\n}
+    }
+
+    \foreach \n in {1,...,\schartnumlines}{
+        \scharthline{\n}
+    }
+
+    \inputbox{Penalty}{}{\foldwidth/2-.5cm}{\abilitysep/3}
+
+    % --------------------------------------------------------
+    % --------------------------CLASS-------------------------
+    % --------------------------------------------------------
+
+    \input{inserts/\classname.tex}
+    % \node[rotate=-90,gray] at (3\foldwidth/2, \textheight/2) {\emphtext{Class insert goes here \classname}};
+
+    % --------------------------------------------------------
+    % ------------------------EQUIPMENT-----------------------
+    % --------------------------------------------------------
+
+    \node at (3\foldwidth - \foldwidth/2 + .5cm, \textheight - \abilitysep/2) {\emphtext{Possessions}};
+
+    % \newcommand\maxitemlinenum{10}
+    % \newcommand{\itemchartvline}[1]{
+    %     \draw[gray] ({3\foldwidth - \linesep * (\maxlinenum - #1 + 1) - .5cm}, \abilitysep/2) -- ({3\foldwidth - \linesep * (\maxlinenum - #1 + 1) - .5cm},\textheight - \abilitysep) node[above] {\commenttext{+#1}};
+    % }
+    %
+    % \foreach \n in {1,...,\maxlinenum}{
+    %     \itemchartvline{\n}
+    % }
+
+
+    \foreach \n in {1,...,\numitemchartlines}{
+        \itemcharthline{\n}
+    }
+
+    \draw (\maxitemchartx-1cm, 2\abilitysep/3) -- (\maxitemchartx-1cm,\textheight-\abilitysep);
+    \draw (\maxitemchartx, 2\abilitysep/3) -- (\maxitemchartx, \textheight-\abilitysep);
+    \node[above] at ({(\minitemchartx + \maxitemchartx-1cm)/2}, \textheight-\abilitysep) {\commenttext{Item}};
+    \node[above] at ({(\maxitemchartx + \maxitemchartx-1cm)/2}, \textheight-\abilitysep) {\commenttext{\#}};
+
+    \inputbox{cp}{}{2\foldwidth + \foldwidth/6 * 2}{\abilitysep/3}
+    \inputbox{sp}{}{2\foldwidth + \foldwidth/6 * 3}{\abilitysep/3}
+    \inputbox{gp}{}{2\foldwidth + \foldwidth/6 * 4}{\abilitysep/3}
+    \inputbox{ep}{}{2\foldwidth + \foldwidth/6 * 5}{\abilitysep/3}
+
+\end{tikzpicture}
+}
+\end{document}

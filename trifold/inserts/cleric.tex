@@ -1,0 +1,26 @@
+\classheader{Cleric}{
+    % \textbf{God}: At 1st level, a cleric selects a god to worship which is of the same alignment of the cleric (see pg 32). \\
+    \textbf{Weapon training}: A cleric is trained to use weapons used by faithful followers of his god. Clerics may use armor and spell checks are not hindered by its use. \\
+    \textbf{Magic}: Clerics can call upon the favor of their god to cast spells. A cleric's spell check is usually 1d20 + personality modifier + level. The cleric aims to roll above the disapproval range, and failing to cast a spell or committing sin will increase this range. \\
+    \bigskip \bigskip \bigskip
+    \textbf{Turn unholy}: A cleric can utilize a spell check to deter creatures deemed unholy by the cleric's god. This check is also modified by the cleric's Luck stat. \\
+    \textbf{Lay on hands}: By making a spell check, a cleric can heal damage to any living creature. The amount healed is measured in hit-die of the creature and is increased for creatures of the same alignment as the cleric. The number of dice healed cannot exceed the level (or HD) of the creature. Healing a creature of the opposed alignment is always considered sinful. \\
+    \begin{center}
+        \begin{tabular}{| r | c c c |}
+        \hline
+        \textbf{check} & \textbf{same} & \textbf{adjacent} & \textbf{opposed} \\
+            \hline
+            1-11 & Failure & Failure & Failure \\
+            12-13 & 2 dice & 1 die & 1 die \\
+            14-19 & 3 dice & 2 dice & 1 die \\
+            20-21 & 4 dice & 3 dice & 2 dice \\
+            22+ & 5 dice & 4 dice & 3 dice \\
+            \hline
+        \end{tabular} \\
+    \end{center}
+    \textbf{Divine aid}: As a devout follower you are entitled to beseech your deity for divine aid. This is modeled as a normal spell check against a DC proportional to the magnitude of the aid requested. Failure will impart a +10 penalty to your disapproval range.
+}
+\draw (1.2\foldwidth, .1\textheight + 1.5ex) rectangle (1.9\foldwidth, .1\foldwidth) node[pos=.5,left,xshift= -0.35\foldwidth] {\emphtext{God}};
+
+% disapproval
+\inputbox{\# Failures}{\emphtext{Disapproval Range: 1+}}{1.83\foldwidth}{.68\textheight}
