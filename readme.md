@@ -1,7 +1,5 @@
-# Dungeon Crawl Classics Character Sheets
-A set of character sheets for the Dungeon Crawl Classics RPG.
-
 # Trifold character sheets for Dungeon Crawl Classics
+A set of character sheets for the Dungeon Crawl Classics RPG.
 
 ## Contents
 * `0level/` contains the code to generate 0-level character sheets, 4 per page.
