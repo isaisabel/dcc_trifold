@@ -185,7 +185,7 @@
 
 \begin{document}
 % for each class
-\foreach \classname in {wizard,cleric,warrior,thief,dwarf,elf,halfling}{
+\foreach \classname in {wizard,cleric,warrior,thief,dwarf,elf,halfling,druid,witch}{
 
 \noindent
 \begin{tikzpicture}
@@ -275,13 +275,17 @@
     \draw (\foldwidth, \textheight - \abilitysep/2) -- (2\foldwidth - 1.2cm, \textheight - \abilitysep/2)
     node[pos=.5,above] {
         \expandafter\ifstrequal\expandafter{\classname}{wizard}{\emphtext{Grimorie}}{
-            \expandafter\ifstrequal\expandafter{\classname}{elf}{\emphtext{Grimorie}}{
-                \expandafter\ifstrequal\expandafter{\classname}{cleric}{\emphtext{Notes}}{
-                    \expandafter\ifstrequal\expandafter{\classname}{dwarf}{\emphtext{Notes}}{
-                        \expandafter\ifstrequal\expandafter{\classname}{thief}{\emphtext{Notes}}{
-                            \expandafter\ifstrequal\expandafter{\classname}{warrior}{\emphtext{Notes}}{
-                                \expandafter\ifstrequal\expandafter{\classname}{halfling}{\emphtext{Notes}}{
-                                    CLASS ERROR
+            \expandafter\ifstrequal\expandafter{\classname}{witch}{\emphtext{Spells}}{
+                \expandafter\ifstrequal\expandafter{\classname}{druid}{\emphtext{Notes}}{
+                    \expandafter\ifstrequal\expandafter{\classname}{elf}{\emphtext{Grimorie}}{
+                        \expandafter\ifstrequal\expandafter{\classname}{cleric}{\emphtext{Notes}}{
+                            \expandafter\ifstrequal\expandafter{\classname}{dwarf}{\emphtext{Notes}}{
+                                \expandafter\ifstrequal\expandafter{\classname}{thief}{\emphtext{Notes}}{
+                                    \expandafter\ifstrequal\expandafter{\classname}{warrior}{\emphtext{Notes}}{
+                                        \expandafter\ifstrequal\expandafter{\classname}{halfling}{\emphtext{Notes}}{
+                                            CLASS ERROR
+                                        }
+                                    }
                                 }
                             }
                         }
